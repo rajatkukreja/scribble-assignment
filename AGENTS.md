@@ -40,3 +40,10 @@ You are working on a monolithic repository for a multiplayer drawing game ("Scri
 -   Give concise, direct answers.
 -   Do not output large blocks of code if a small change suffices.
 -   When creating or editing files, ensure consistency with the existing directory structure detailed above.
+
+## Active Technologies
+- TypeScript 5.x (strict mode) + Express 4.x (backend), React 18 + Vite 6.x (frontend), Zod (validation), Vitest (testing) (001-room-setup-lobby)
+- In-memory only (no database) — `Map<string, Room>` in backend (001-room-setup-lobby)
+
+## Recent Changes
+- 001-room-setup-lobby: Added TypeScript 5.x (strict mode) + Express 4.x (backend), React 18 + Vite 6.x (frontend), Zod (validation), Vitest (testing)
