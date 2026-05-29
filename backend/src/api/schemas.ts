@@ -14,6 +14,11 @@ export const startGameSchema = z.object({
   participantId: z.string()
 });
 
+export const guessSchema = z.object({
+  participantId: z.string(),
+  guess: z.string().trim().min(1, "Guess cannot be empty")
+});
+
 export const roomCodeParamsSchema = z.object({
   code: z.string().trim().min(1, "Room code is required")
 });

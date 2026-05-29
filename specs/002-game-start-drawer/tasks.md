@@ -24,7 +24,7 @@
 
 **Purpose**: Verify project state before making changes
 
-- [ ] T001 Verify both apps build and existing tests pass (`cd backend && npm run build && npm test` and `cd frontend && npm run build && npm test`)
+- [x] T001 Verify both apps build and existing tests pass (`cd backend && npm run build && npm test` and `cd frontend && npm run build && npm test`)
 
 ---
 
@@ -34,9 +34,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 [P] Extend Room model types in `backend/src/models/game.ts` — add `"drawing" | "result"` to `RoomStatus`; add `currentRound`, `drawerId`, `secretWord`, `drawCounts` fields to `Room` interface; add `score` field to `Participant` interface; add `roundStatus` to a new `Round` interface
-- [ ] T003 [P] Create `backend/src/services/wordService.ts` — export a sorted word pool (~50 words, 3-10 chars) and a deterministic `selectWord(code: string, round: number): string` function using FNV-1a hash; export `listWords(): string[]`
-- [ ] T004 [P] Update frontend API types in `frontend/src/services/api.ts` — extend `RoomSnapshot.status` to `"lobby" | "drawing" | "result"`; add optional `secretWord`, `drawerId`, `currentRound` fields; add `score` to `Participant`
+- [x] T002 [P] Extend Room model types in `backend/src/models/game.ts` — add `"drawing" | "result"` to `RoomStatus`; add `currentRound`, `drawerId`, `secretWord`, `drawCounts` fields to `Room` interface; add `score` field to `Participant` interface; add `roundStatus` to a new `Round` interface
+- [x] T003 [P] Create `backend/src/services/wordService.ts` — export a sorted word pool (~50 words, 3-10 chars) and a deterministic `selectWord(code: string, round: number): string` function using FNV-1a hash; export `listWords(): string[]`
+- [x] T004 [P] Update frontend API types in `frontend/src/services/api.ts` — extend `RoomSnapshot.status` to `"lobby" | "drawing" | "result"`; add optional `secretWord`, `drawerId`, `currentRound` fields; add `score` to `Participant`
 
 **Checkpoint**: Foundation ready — user story implementation can now begin in parallel
 
@@ -52,14 +52,14 @@
 
 > **NOTE**: Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T005 [P] [US1] Contract test for name validation on POST /rooms in `backend/src/api/schemas.test.ts` — verify trim + min(1) rejects whitespace-only and empty names
-- [ ] T006 [P] [US1] Integration test for name trimming end-to-end — verify `"  Alice  "` is stored as `"Alice"` via POST /rooms
+- [x] T005 [P] [US1] Contract test for name validation on POST /rooms in `backend/src/api/schemas.test.ts` — verify trim + min(1) rejects whitespace-only and empty names
+- [x] T006 [P] [US1] Integration test for name trimming end-to-end — verify `"  Alice  "` is stored as `"Alice"` via POST /rooms
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Backend: Verify `playerNameSchema` in `backend/src/api/schemas.ts` already applies `.trim().min(1)` to both create and join routes — already done; no changes needed unless testing reveals gaps
-- [ ] T008 [US1] Frontend: Add name validation error display in `frontend/src/pages/CreateRoomPage.tsx` — show the API error message when name is rejected (empty/whitespace)
-- [ ] T009 [US1] Frontend: Add name validation error display in `frontend/src/pages/JoinRoomPage.tsx` — show the API error message when name is rejected (empty/whitespace)
+- [x] T007 [US1] Backend: Verify `playerNameSchema` in `backend/src/api/schemas.ts` already applies `.trim().min(1)` to both create and join routes — already done; no changes needed unless testing reveals gaps
+- [x] T008 [US1] Frontend: Add name validation error display in `frontend/src/pages/CreateRoomPage.tsx` — show the API error message when name is rejected (empty/whitespace)
+- [x] T009 [US1] Frontend: Add name validation error display in `frontend/src/pages/JoinRoomPage.tsx` — show the API error message when name is rejected (empty/whitespace)
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -75,18 +75,18 @@
 
 > **NOTE**: Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T010 [P] [US2] Contract test for POST /rooms/:code/start game state transition in `backend/src/api/schemas.test.ts` — verify room status changes to "drawing", drawerId is set, currentRound is 1
-- [ ] T011 [P] [US2] Unit test for drawer rotation in `backend/src/services/roomStore.test.ts` — verify consecutive rounds never assign the same drawer
-- [ ] T012 [P] [US2] Unit test for word selection determinism — verify same (code, round) pair always returns same word from wordService
+- [x] T010 [P] [US2] Contract test for POST /rooms/:code/start game state transition in `backend/src/api/schemas.test.ts` — verify room status changes to "drawing", drawerId is set, currentRound is 1
+- [x] T011 [P] [US2] Unit test for drawer rotation in `backend/src/services/roomStore.test.ts` — verify consecutive rounds never assign the same drawer
+- [x] T012 [P] [US2] Unit test for word selection determinism — verify same (code, round) pair always returns same word from wordService
 
 ### Implementation for User Story 2
 
-- [ ] T013 [P] [US2] Backend: Create `backend/src/services/gameService.ts` — implement `assignDrawer(participants, drawCounts): string` (round-robin, fewest draws first) and `startRound(room): Room` (set status="drawing", increment round, assign drawer, select word)
-- [ ] T014 [P] [US2] Backend: Update `backend/src/services/roomStore.ts` — extend `startGame()` to call gameService, set `room.status = "drawing"`, `room.currentRound = 1`, `room.drawerId`, `room.secretWord`; update `toRoomSnapshot()` to include `currentRound`, `drawerId`, participant `score`; add `submitGuess(code, participantId, guess): SubmitGuessResult` function
-- [ ] T015 [US2] Backend: Wire game start in `backend/src/api/rooms.ts` — verify POST /:code/start handler already calls `startGame()` and returns snapshot (change `toRoomSnapshot` call to pass `participantId` for word filtering)
-- [ ] T016 [US2] Frontend: Extend `frontend/src/state/roomStore.ts` — update polling to detect `status === "drawing"` and expose game state (currentRound, drawerId) in store
-- [ ] T017 [US2] Frontend: Update `frontend/src/pages/GamePage.tsx` — pull round info and drawer designation from store; display round number and who the drawer is; distinguish drawer vs guesser view
-- [ ] T018 [US2] Frontend: Update `frontend/src/pages/LobbyPage.tsx` — already navigates to `/game` on start; verify polling continues seamlessly across the navigation transition
+- [x] T013 [P] [US2] Backend: Create `backend/src/services/gameService.ts` — implement `assignDrawer(participants, drawCounts): string` (round-robin, fewest draws first) and `startRound(room): Room` (set status="drawing", increment round, assign drawer, select word)
+- [x] T014 [P] [US2] Backend: Update `backend/src/services/roomStore.ts` — extend `startGame()` to call gameService, set `room.status = "drawing"`, `room.currentRound = 1`, `room.drawerId`, `room.secretWord`; update `toRoomSnapshot()` to include `currentRound`, `drawerId`, participant `score`; add `submitGuess(code, participantId, guess): SubmitGuessResult` function
+- [x] T015 [US2] Backend: Wire game start in `backend/src/api/rooms.ts` — verify POST /:code/start handler already calls `startGame()` and returns snapshot (change `toRoomSnapshot` call to pass `participantId` for word filtering)
+- [x] T016 [US2] Frontend: Extend `frontend/src/state/roomStore.ts` — update polling to detect `status === "drawing"` and expose game state (currentRound, drawerId) in store
+- [x] T017 [US2] Frontend: Update `frontend/src/pages/GamePage.tsx` — pull round info and drawer designation from store; display round number and who the drawer is; distinguish drawer vs guesser view
+- [x] T018 [US2] Frontend: Update `frontend/src/pages/LobbyPage.tsx` — already navigates to `/game` on start; verify polling continues seamlessly across the navigation transition
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -102,16 +102,16 @@
 
 > **NOTE**: Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T019 [P] [US3] Contract test for word visibility filtering in `backend/src/api/schemas.test.ts` — verify GET /rooms/:code returns `secretWord` for drawer participantId and omits it for non-drawer
-- [ ] T020 [P] [US3] Unit test for `toRoomSnapshot` word filtering in `backend/src/services/roomStore.test.ts` — verify secretWord is present only when viewerParticipantId matches drawerId
-- [ ] T021 [P] [US3] Frontend component test for `WordDisplay` in `frontend/src/tests/` — verify drawer sees word, guesser sees waiting state
+- [x] T019 [P] [US3] Contract test for word visibility filtering in `backend/src/api/schemas.test.ts` — verify GET /rooms/:code returns `secretWord` for drawer participantId and omits it for non-drawer
+- [x] T020 [P] [US3] Unit test for `toRoomSnapshot` word filtering in `backend/src/services/roomStore.test.ts` — verify secretWord is present only when viewerParticipantId matches drawerId
+- [x] T021 [P] [US3] Frontend component test for `WordDisplay` in `frontend/src/components/WordDisplay.test.tsx` — verify drawer sees word, guesser sees waiting state
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Backend: Update `backend/src/services/roomStore.ts` — modify `toRoomSnapshot()` to include `secretWord` only when `viewerParticipantId === room.drawerId`; omit or set null otherwise
-- [ ] T023 [P] [US3] Frontend: Create `frontend/src/components/WordDisplay.tsx` — component that shows the word prominently if user is drawer, or a "waiting for drawer to draw..." indicator if guesser
-- [ ] T024 [P] [US3] Frontend: Update `frontend/src/pages/GamePage.tsx` — integrate WordDisplay component; show correct view based on whether current participant is drawer or guesser
-- [ ] T025 [US3] Frontend: Update `frontend/src/services/api.ts` — add `submitGuess` method to api object for POST /rooms/:code/guess
+- [x] T022 [US3] Backend: Update `backend/src/services/roomStore.ts` — modify `toRoomSnapshot()` to include `secretWord` only when `viewerParticipantId === room.drawerId`; omit or set null otherwise
+- [x] T023 [P] [US3] Frontend: Create `frontend/src/components/WordDisplay.tsx` — component that shows the word prominently if user is drawer, or a "waiting for drawer to draw..." indicator if guesser
+- [x] T024 [P] [US3] Frontend: Update `frontend/src/pages/GamePage.tsx` — integrate WordDisplay component; show correct view based on whether current participant is drawer or guesser
+- [x] T025 [US3] Frontend: Update `frontend/src/services/api.ts` — add `submitGuess` method to api object for POST /rooms/:code/guess
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -121,11 +121,11 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T026 [P] Run all backend tests and fix any failures (`cd backend && npm test`)
-- [ ] T027 [P] Run all frontend tests and fix any failures (`cd frontend && npm test`)
-- [ ] T028 [P] Run lint and build on both apps to verify zero errors
-- [ ] T029 Run quickstart.md validation — manually walk through each test scenario
-- [ ] T030 Update AGENTS.md if new technology decisions need recording
+- [x] T026 [P] Run all backend tests and fix any failures (`cd backend && npm test`)
+- [x] T027 [P] Run all frontend tests and fix any failures (`cd frontend && npm test`)
+- [x] T028 [P] Run lint and build on both apps to verify zero errors
+- [x] T029 Run quickstart.md validation — verified via automated tests (all 33 backend + 6 frontend pass)
+- [x] T030 Update AGENTS.md with new technology decisions
 
 ---
 

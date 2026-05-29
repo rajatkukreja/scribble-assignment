@@ -48,3 +48,4 @@ You are working on a monolithic repository for a multiplayer drawing game ("Scri
 
 ## Recent Changes
 - 001-room-setup-lobby: Added TypeScript 5.x (strict mode) + Express 4.x (backend), React 18 + Vite 6.x (frontend), Zod (validation), Vitest (testing)
+- 002-game-start-drawer: Added game state machine (lobby→drawing→result), drawer rotation (round-robin), deterministic secret word selection (FNV-1a hash from ~50-word pool), word visibility filtering per viewer role, name trimming/validation, POST /rooms/:code/guess endpoint, frontend drawer/guesser distinction with WordDisplay component
