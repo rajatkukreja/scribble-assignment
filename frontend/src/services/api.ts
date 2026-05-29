@@ -9,6 +9,7 @@ export interface Participant {
 export interface RoomSnapshot {
   code: string;
   status: "lobby";
+  hostId: string;
   participants: Participant[];
   availableWords: string[];
   roles: ParticipantRole[];
@@ -16,6 +17,10 @@ export interface RoomSnapshot {
 
 export interface RoomSessionResponse {
   participantId: string;
+  room: RoomSnapshot;
+}
+
+export interface RoomStartResponse {
   room: RoomSnapshot;
 }
 
@@ -31,11 +36,11 @@ async function request<T>(path: string, init?: RequestInit) {
   });
 
   if (!response.ok) {
-    const errorBody = (await response.json().catch(() => ({ message: "Request failed" }))) as {
-      message?: string;
+    const errorBody = (await response.json().catch(() => ({ error: "Request failed" }))) as {
+      error?: string;
     };
 
-    throw new Error(errorBody.message ?? "Request failed");
+    throw new Error(errorBody.error ?? "Request failed");
   }
 
   return (await response.json()) as T;
@@ -57,5 +62,11 @@ export const api = {
   fetchRoom(code: string, participantId?: string) {
     const query = participantId ? `?participantId=${encodeURIComponent(participantId)}` : "";
     return request<{ room: RoomSnapshot }>(`/rooms/${encodeURIComponent(code)}${query}`);
+  },
+  startGame(code: string, participantId: string) {
+    return request<RoomStartResponse>(`/rooms/${encodeURIComponent(code)}/start`, {
+      method: "POST",
+      body: JSON.stringify({ participantId })
+    });
   }
 };

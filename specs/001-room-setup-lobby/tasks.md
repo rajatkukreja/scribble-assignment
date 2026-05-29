@@ -30,7 +30,7 @@ description: "Task list for Room Setup & Lobby feature"
 
 **Purpose**: Verify existing project is clean before making changes
 
-- [ ] T001 [P] Verify both apps build and existing tests pass:
+- [x] T001 [P] Verify both apps build and existing tests pass:
       `cd backend && npm run build && npm test`
       `cd frontend && npm run build && npm test`
 
@@ -42,9 +42,9 @@ description: "Task list for Room Setup & Lobby feature"
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 [P] Add `hostId` field to `Room` interface and `RoomSnapshot`
+- [x] T002 [P] Add `hostId` field to `Room` interface and `RoomSnapshot`
       interface in `backend/src/models/game.ts`
-- [ ] T003 [P] Update schemas in `backend/src/api/schemas.ts`:
+- [x] T003 [P] Update schemas in `backend/src/api/schemas.ts`:
       - Make `playerName` required (non-empty string with trim) in
         `createRoomSchema` and `joinRoomSchema`
       - Add `startGameSchema` with `participantId: z.string()`
@@ -71,33 +71,33 @@ screen
 
 > NOTE: Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T004 [P] [US1] Contract test for `POST /rooms` returning `hostId` in
+- [x] T004 [P] [US1] Contract test for `POST /rooms` returning `hostId` in
       response — write test in `backend/src/api/schemas.test.ts` that verifies
       the response shape includes `room.hostId` matching `participantId`
-- [ ] T005 [P] [US1] Unit test for `roomStore.createRoom` assigning hostId in
+- [x] T005 [P] [US1] Unit test for `roomStore.createRoom` assigning hostId in
       `backend/src/services/roomStore.test.ts` — verify `result.room.hostId`
       equals `result.participantId`
 
 ### Implementation for User Story 1
 
-- [ ] T006 [P] [US1] Update `createRoom` in
+- [x] T006 [P] [US1] Update `createRoom` in
       `backend/src/services/roomStore.ts` to assign `hostId` on the Room
       (set to the creator's participant ID)
-- [ ] T007 [US1] Update `toRoomSnapshot` in
+- [x] T007 [US1] Update `toRoomSnapshot` in
       `backend/src/services/roomStore.ts` to include `hostId` in the returned
       snapshot
-- [ ] T008 [P] [US1] Add `hostId` field to `RoomSnapshot` interface in
+- [x] T008 [P] [US1] Add `hostId` field to `RoomSnapshot` interface in
       `frontend/src/services/api.ts`
-- [ ] T009 [US1] Update `POST /rooms` handler in
+- [x] T009 [US1] Update `POST /rooms` handler in
       `backend/src/api/rooms.ts` — ensure the 201 response includes `hostId`
       in the room object
-- [ ] T010 [US1] Update `CreateRoomPage` in
+- [x] T010 [US1] Update `CreateRoomPage` in
       `frontend/src/pages/CreateRoomPage.tsx` to navigate to lobby after
       creation (already partially done), pass host context
-- [ ] T011 [US1] Update `LobbyPage` in
+- [x] T011 [US1] Update `LobbyPage` in
       `frontend/src/pages/LobbyPage.tsx` to show a "Host" badge next to the
       host participant's name (compare `participant.id` with `room.hostId`)
-- [ ] T012 [US1] Verify tests T004 and T005 now pass —
+- [x] T012 [US1] Verify tests T004 and T005 now pass —
       `cd backend && npm test`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and
@@ -118,28 +118,28 @@ case.
 
 > NOTE: Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T013 [P] [US2] Unit test for `roomStore.joinRoom` returning distinct
+- [x] T013 [P] [US2] Unit test for `roomStore.joinRoom` returning distinct
       error types for empty code vs non-existent room in
       `backend/src/services/roomStore.test.ts`
-- [ ] T014 [P] [US2] Contract test for `POST /rooms/:code/join` validation
+- [x] T014 [P] [US2] Contract test for `POST /rooms/:code/join` validation
       errors in `backend/src/api/schemas.test.ts` — verify empty code returns
       400 with appropriate error message, non-existent code returns 404
 
 ### Implementation for User Story 2
 
-- [ ] T015 [P] [US2] Update `joinRoom` in
+- [x] T015 [P] [US2] Update `joinRoom` in
       `backend/src/services/roomStore.ts`:
       - Return typed error for empty/whitespace code (rather than generic null)
       - Return typed error for non-existent room
       - Validate playerName is non-empty after trim
-- [ ] T016 [US2] Update `POST /rooms/:code/join` handler in
+- [x] T016 [US2] Update `POST /rooms/:code/join` handler in
       `backend/src/api/rooms.ts` to map joinRoom errors to appropriate HTTP
       status codes (400 for validation, 404 for not found) with clear
       `{ error: string }` message
-- [ ] T017 [US2] Update `JoinRoomPage` in
+- [x] T017 [US2] Update `JoinRoomPage` in
       `frontend/src/pages/JoinRoomPage.tsx` to display validation error
       messages from the backend response
-- [ ] T018 [US2] Verify tests T013 and T014 now pass —
+- [x] T018 [US2] Verify tests T013 and T014 now pass —
       `cd backend && npm test`
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work
@@ -160,41 +160,41 @@ cannot.
 
 > NOTE: Write these tests FIRST, ensure they FAIL before implementation
 
-- [ ] T019 [P] [US3] Contract test for `POST /rooms/:code/start` in
+- [x] T019 [P] [US3] Contract test for `POST /rooms/:code/start` in
       `backend/src/api/schemas.test.ts` — verify:
       - Host can start with 2+ players (200)
       - Non-host cannot start (403)
       - Host cannot start with only 1 player (400)
-- [ ] T020 [P] [US3] Unit test for `roomStore.startGame` in
+- [x] T020 [P] [US3] Unit test for `roomStore.startGame` in
       `backend/src/services/roomStore.test.ts` — verify host check and
       minimum player enforcement
 
 ### Implementation for User Story 3
 
-- [ ] T021 [P] [US3] Add `startGame` function to
+- [x] T021 [P] [US3] Add `startGame` function to
       `backend/src/services/roomStore.ts`:
       - Accept room code and requesting participant ID
       - Validate requestor is the host (return 403 error if not)
       - Validate >= 2 participants (return 400 error if fewer)
       - Return updated room snapshot on success
-- [ ] T022 [US3] Add `POST /rooms/:code/start` endpoint in
+- [x] T022 [US3] Add `POST /rooms/:code/start` endpoint in
       `backend/src/api/rooms.ts`:
       - Parse `participantId` from request body
       - Call `startGame` service
       - Return room snapshot on success
       - Map service errors to HTTP responses with `{ error: string }` format
-- [ ] T023 [US3] Implement automatic lobby polling in
+- [x] T023 [US3] Implement automatic lobby polling in
       `frontend/src/state/roomStore.ts`:
       - Add `startPolling()` and `stopPolling()` methods
       - `startPolling` calls `fetchRoom` every ~2s using `setInterval`
       - `stopPolling` clears the interval
       - Store polling state (isPolling, lastPollError)
-- [ ] T024 [P] [US3] Add `startGame` method to `frontend/src/services/api.ts`
+- [x] T024 [P] [US3] Add `startGame` method to `frontend/src/services/api.ts`
       — sends POST to `/rooms/:code/start` with `participantId` in body
-- [ ] T025 [P] [US3] Add `startGame` action to
+- [x] T025 [P] [US3] Add `startGame` action to
       `frontend/src/state/roomStore.ts` — calls `api.startGame` and updates
       room state
-- [ ] T026 [US3] Update `LobbyPage` in
+- [x] T026 [US3] Update `LobbyPage` in
       `frontend/src/pages/LobbyPage.tsx`:
       - Start polling on mount via `useEffect`
       - Stop polling on unmount (cleanup)
@@ -202,9 +202,9 @@ cannot.
       - Disable start button / show error when fewer than 2 players
       - Show "Waiting for host to start..." for non-host players
       - Replace manual "Refresh Room" button with auto-polling indicator
-- [ ] T027 [US3] Wire up response from `startGame` to navigate to `/game`
+- [x] T027 [US3] Wire up response from `startGame` to navigate to `/game`
       route in `frontend/src/pages/LobbyPage.tsx`
-- [ ] T028 [US3] Verify tests T019 and T020 now pass —
+- [x] T028 [US3] Verify tests T019 and T020 now pass —
       `cd backend && npm test`
 
 **Checkpoint**: All user stories should now work together. Two browsers can
@@ -217,7 +217,7 @@ button.
 
 **Purpose**: Final validation and hardening
 
-- [ ] T029 [P] Run full build and lint on both apps:
+- [x] T029 [P] Run full build and lint on both apps:
       `cd backend && npm run build && npm test`
       `cd frontend && npm run build && npm test`
 - [ ] T030 End-to-end two-browser manual validation per `quickstart.md` in

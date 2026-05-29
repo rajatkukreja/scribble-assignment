@@ -14,6 +14,8 @@ export interface RoomState {
   participantId: string | null;
   error: string | null;
   isLoading: boolean;
+  isPolling: boolean;
+  lastPollError: string | null;
 }
 
 type Listener = () => void;
@@ -23,8 +25,12 @@ class RoomStore {
     room: null,
     participantId: null,
     error: null,
-    isLoading: false
+    isLoading: false,
+    isPolling: false,
+    lastPollError: null
   };
+
+  private pollingInterval: ReturnType<typeof setInterval> | null = null;
 
   private listeners = new Set<Listener>();
 
@@ -97,6 +103,45 @@ class RoomStore {
     const response = await api.fetchRoom(this.state.room.code, this.state.participantId ?? undefined);
     this.setRoomSnapshot(response.room);
     return response.room;
+  }
+
+  startPolling() {
+    if (this.pollingInterval) {
+      return;
+    }
+
+    this.setState({ isPolling: true });
+
+    this.pollingInterval = setInterval(async () => {
+      try {
+        await this.fetchRoom();
+        this.setState({ lastPollError: null });
+      } catch (caughtError) {
+        const message = caughtError instanceof Error ? caughtError.message : "Polling failed";
+        this.setState({ lastPollError: message });
+      }
+    }, 2000);
+  }
+
+  stopPolling() {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
+
+    this.setState({ isPolling: false });
+  }
+
+  async startGame() {
+    if (!this.state.room) {
+      throw new Error("No room to start");
+    }
+
+    const response = await this.withLoading(() =>
+      api.startGame(this.state.room!.code, this.state.participantId!)
+    );
+    this.setRoomSnapshot(response.room);
+    return response;
   }
 }
 

@@ -24,18 +24,19 @@ export function notFoundHandler(_request: Request, response: Response) {
 }
 
 export function errorHandler(
-  error: Error & { statusCode?: number },
+  error: Error & { statusCode?: number; issues?: Array<{ message: string }> },
   _request: Request,
   response: Response,
   _next: NextFunction
 ) {
   if (error.name === "ZodError") {
-    response.status(400).json({ message: "Invalid request payload" });
+    const firstMessage = (error as unknown as { issues: Array<{ message: string }> }).issues?.[0]?.message ?? "Invalid request payload";
+    response.status(400).json({ error: firstMessage });
     return;
   }
 
   const statusCode = error.statusCode ?? 500;
   response.status(statusCode).json({
-    message: error.message || "Unexpected server error"
+    error: error.message || "Unexpected server error"
   });
 }

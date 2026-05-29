@@ -54,6 +54,7 @@ export function createRoom(playerName?: string) {
   const room: Room = {
     code: generateUniqueCode(),
     status: "lobby",
+    hostId: participant.id,
     participants: [participant],
     createdAt: now(),
     updatedAt: now()
@@ -67,22 +68,67 @@ export function createRoom(playerName?: string) {
   };
 }
 
-export function joinRoom(code: string, playerName?: string) {
-  const room = rooms.get(code);
+export type JoinRoomResult =
+  | { ok: true; room: Room; participantId: string }
+  | { ok: false; status: number; error: string };
 
-  if (!room) {
-    return null;
+export function joinRoom(code: string, playerName: string): JoinRoomResult {
+  const trimmedCode = code.trim();
+
+  if (!trimmedCode) {
+    return { ok: false, status: 400, error: "Room code is required" };
   }
 
-  const participant = createParticipant(playerName);
+  const trimmedName = playerName.trim();
+
+  if (!trimmedName) {
+    return { ok: false, status: 400, error: "Player name is required" };
+  }
+
+  const room = rooms.get(trimmedCode.toUpperCase());
+
+  if (!room) {
+    return { ok: false, status: 404, error: "Room not found" };
+  }
+
+  const participant = createParticipant(trimmedName);
   room.participants.push(participant);
   room.updatedAt = now();
   rooms.set(room.code, room);
 
   return {
+    ok: true,
     room: cloneRoom(room),
     participantId: participant.id
   };
+}
+
+export type StartGameResult =
+  | { ok: true; room: Room }
+  | { ok: false; status: number; error: string };
+
+export function startGame(code: string, participantId: string): StartGameResult {
+  const trimmedCode = code.trim().toUpperCase();
+
+  if (!trimmedCode) {
+    return { ok: false, status: 400, error: "Room code is required" };
+  }
+
+  const room = rooms.get(trimmedCode);
+
+  if (!room) {
+    return { ok: false, status: 404, error: "Room not found" };
+  }
+
+  if (room.hostId !== participantId) {
+    return { ok: false, status: 403, error: "Only the host can start the game" };
+  }
+
+  if (room.participants.length < 2) {
+    return { ok: false, status: 400, error: "At least 2 players are required to start" };
+  }
+
+  return { ok: true, room: cloneRoom(room) };
 }
 
 export function getRoom(code: string) {
@@ -102,6 +148,7 @@ export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSn
   return {
     code: room.code,
     status: room.status,
+    hostId: room.hostId,
     participants: room.participants.map((participant) => ({ ...participant })),
     availableWords: listWords(),
     roles: [...STARTER_ROLES]
