@@ -91,7 +91,7 @@ export function DrawingCanvas({ color, width }: CanvasProps) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (!room) return;
+    if (!room || !room.canvasStrokes) return;
     for (const stroke of room.canvasStrokes) {
       if (stroke.points.length < 2) continue;
       ctx.beginPath();
