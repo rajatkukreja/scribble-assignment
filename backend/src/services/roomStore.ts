@@ -125,6 +125,10 @@ export type EndRoundResult =
   | { ok: true; room: Room }
   | { ok: false; status: number; error: string };
 
+export type RestartGameResult =
+  | { ok: true; room: Room }
+  | { ok: false; status: number; error: string };
+
 export function startGame(code: string, participantId: string): StartGameResult {
   const trimmedCode = code.trim().toUpperCase();
 
@@ -305,6 +309,45 @@ export function endRound(code: string, participantId: string): EndRoundResult {
   return { ok: true, room: cloneRoom(room) };
 }
 
+export function restartGame(code: string, participantId: string): RestartGameResult {
+  const trimmedCode = code.trim().toUpperCase();
+
+  if (!trimmedCode) {
+    return { ok: false, status: 400, error: "Room code is required" };
+  }
+
+  const room = rooms.get(trimmedCode);
+
+  if (!room) {
+    return { ok: false, status: 404, error: "Room not found" };
+  }
+
+  if (room.status !== "result") {
+    return { ok: false, status: 400, error: "Game is not in result state" };
+  }
+
+  if (room.hostId !== participantId) {
+    return { ok: false, status: 403, error: "Only the host can restart the game" };
+  }
+
+  for (const participant of room.participants) {
+    participant.score = 0;
+  }
+
+  room.status = "lobby";
+  room.currentRound = 0;
+  room.drawerId = null;
+  room.secretWord = null;
+  room.drawCounts = {};
+  room.currentRoundGuesses = [];
+  room.canvasStrokes = [];
+  room.correctGuessOrder = 0;
+  room.roundScores = [];
+  room.updatedAt = now();
+
+  return { ok: true, room: cloneRoom(room) };
+}
+
 export function getRoom(code: string) {
   const room = rooms.get(code);
   return room ? cloneRoom(room) : null;
@@ -318,6 +361,7 @@ export function saveRoom(room: Room) {
 
 export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSnapshot {
   const isDrawer = viewerParticipantId !== undefined && viewerParticipantId === room.drawerId;
+  const showSecretWord = isDrawer || room.status === "result";
 
   return {
     code: room.code,
@@ -326,7 +370,7 @@ export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSn
     participants: room.participants.map((participant) => ({ ...participant })),
     currentRound: room.currentRound,
     drawerId: room.drawerId,
-    secretWord: isDrawer ? room.secretWord : null,
+    secretWord: showSecretWord ? room.secretWord : null,
     availableWords: listWords(),
     roles: [...STARTER_ROLES],
     currentRoundGuesses: [...room.currentRoundGuesses],

@@ -756,3 +756,23 @@ input {
   color: var(--ink-soft);
   margin-left: 8px;
 }
+
+.result-word {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.1em;
+  padding: 8px 0;
+  color: var(--brand);
+}
+
+.score-row__correct-badge {
+  display: inline-block;
+  background: #d1fae5;
+  color: #065f46;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+}

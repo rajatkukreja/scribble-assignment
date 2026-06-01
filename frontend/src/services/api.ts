@@ -134,5 +134,12 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ participantId })
     });
+  },
+
+  restartGame(code: string, participantId: string) {
+    return request<{ room: RoomSnapshot }>(`/rooms/${encodeURIComponent(code)}/restart`, {
+      method: "POST",
+      body: JSON.stringify({ participantId })
+    });
   }
 };

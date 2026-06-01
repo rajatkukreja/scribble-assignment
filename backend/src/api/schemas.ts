@@ -51,6 +51,10 @@ export const endRoundSchema = z.object({
   participantId: z.string()
 });
 
+export const restartGameSchema = z.object({
+  participantId: z.string()
+});
+
 export class HttpError extends Error {
   statusCode: number;
 

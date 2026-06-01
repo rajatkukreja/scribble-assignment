@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clearCanvas, createRoom, endRound, joinRoom, saveCanvasStroke, startGame, submitGuess, toRoomSnapshot } from "./roomStore.js";
+import { clearCanvas, createRoom, endRound, getRoom, joinRoom, restartGame, saveCanvasStroke, startGame, submitGuess, toRoomSnapshot } from "./roomStore.js";
 
 describe("roomStore", () => {
   it("createRoom returns a room with a 4-character uppercase code", () => {
@@ -385,6 +385,113 @@ describe("roomStore", () => {
       expect(result.ok).toBe(false);
       if (!result.ok) {
         expect(result.status).toBe(400);
+      }
+    });
+  });
+
+  describe("toRoomSnapshot", () => {
+    it("reveals secretWord to all viewers when status is result", () => {
+      const created = createRoom("Alice");
+      joinRoom(created.room.code, "Bob");
+      const started = startGame(created.room.code, created.participantId);
+      expect(started.ok).toBe(true);
+      if (!started.ok) return;
+      const secretWord = started.room.secretWord!;
+      const bobId = started.room.participants.find((p) => p.id !== created.participantId)!.id;
+
+      const guessResult = submitGuess(created.room.code, bobId, secretWord);
+      expect(guessResult.ok).toBe(true);
+      if (!guessResult.ok) return;
+      expect(guessResult.room.status).toBe("result");
+
+      const snapshotForHost = toRoomSnapshot(guessResult.room, created.participantId);
+      const snapshotForGuesser = toRoomSnapshot(guessResult.room, bobId);
+
+      expect(snapshotForHost.secretWord).toBe(secretWord);
+      expect(snapshotForGuesser.secretWord).toBe(secretWord);
+    });
+  });
+
+  describe("restartGame", () => {
+    function setupResultState() {
+      const created = createRoom("Alice");
+      joinRoom(created.room.code, "Bob");
+      joinRoom(created.room.code, "Charlie");
+      const started = startGame(created.room.code, created.participantId);
+      expect(started.ok).toBe(true);
+      if (!started.ok) throw new Error("start failed");
+      const secretWord = started.room.secretWord!;
+      const bobId = started.room.participants.find(p => p.name === "Bob")!.id;
+
+      submitGuess(created.room.code, bobId, secretWord);
+      const result = endRound(created.room.code, created.participantId);
+      expect(result.ok).toBe(true);
+      if (!result.ok) throw new Error("end round failed");
+
+      return { code: created.room.code, hostId: created.participantId, room: result.room };
+    }
+
+    it("resets all round state while preserving participants and host", () => {
+      const { code, hostId } = setupResultState();
+      const stored = getRoom(code);
+      if (!stored) throw new Error("room not found");
+
+      expect(stored.status).toBe("result");
+      expect(stored.participants.length).toBe(3);
+      expect(stored.participants.some(p => p.score > 0)).toBe(true);
+      expect(stored.currentRound).toBe(1);
+
+      const result = restartGame(code, hostId);
+      expect(result.ok).toBe(true);
+      if (!result.ok) return;
+
+      expect(result.room.status).toBe("lobby");
+      expect(result.room.participants.length).toBe(3);
+      expect(result.room.currentRound).toBe(0);
+      expect(result.room.drawerId).toBeNull();
+      expect(result.room.secretWord).toBeNull();
+      expect(result.room.drawCounts).toEqual({});
+      expect(result.room.currentRoundGuesses).toEqual([]);
+      expect(result.room.canvasStrokes).toEqual([]);
+      expect(result.room.correctGuessOrder).toBe(0);
+      expect(result.room.roundScores).toEqual([]);
+      expect(result.room.hostId).toBe(hostId);
+
+      for (const p of result.room.participants) {
+        expect(p.score).toBe(0);
+      }
+    });
+
+    it("rejects restart from non-host player", () => {
+      const { code, room } = setupResultState();
+      const bobId = room.participants.find(p => p.name === "Bob")!.id;
+
+      const result = restartGame(code, bobId);
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.status).toBe(403);
+      }
+    });
+
+    it("rejects restart when status is not result", () => {
+      const created = createRoom("Alice");
+      joinRoom(created.room.code, "Bob");
+
+      const result = restartGame(created.room.code, created.participantId);
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.status).toBe(400);
+      }
+    });
+
+    it("rejects restart for non-existent room", () => {
+      const result = restartGame("ZZZZ", "some-id");
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.status).toBe(404);
       }
     });
   });

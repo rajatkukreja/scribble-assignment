@@ -171,6 +171,14 @@ class RoomStore {
     this.setRoomSnapshot(response.room);
     return response;
   }
+
+  async restartGame(code: string, participantId: string) {
+    const response = await this.withLoading(() =>
+      api.restartGame(code, participantId)
+    );
+    this.setRoomSnapshot(response.room);
+    return response;
+  }
 }
 
 const RoomStoreContext = createContext<RoomStore | null>(null);

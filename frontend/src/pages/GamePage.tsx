@@ -55,6 +55,17 @@ export function GamePage() {
     }
   }, [room, participantId, store]);
 
+  const handleRestart = useCallback(async () => {
+    if (room && participantId) {
+      try {
+        await store.restartGame(room.code, participantId);
+        navigate("/lobby");
+      } catch {
+        // Error state is managed by the store
+      }
+    }
+  }, [room, participantId, store, navigate]);
+
   return (
     <section className="panel game-page">
       <div className="game-page__header">
@@ -126,9 +137,14 @@ export function GamePage() {
           </button>
         )}
         {isHost && room.status === "result" && (
-          <button className="button button--primary" onClick={handleNextRound}>
-            Next Round
-          </button>
+          <>
+            <button className="button button--primary" onClick={handleNextRound}>
+              Next Round
+            </button>
+            <button className="button button--secondary" onClick={handleRestart}>
+              Restart to Lobby
+            </button>
+          </>
         )}
         <button className="button button--secondary" onClick={() => navigate("/lobby")}>
           Exit Game
