@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { Participant, Room, RoomSnapshot } from "../models/game.js";
 import { STARTER_ROLES, STARTER_WORDS } from "../seed/starterData.js";
-import { startRound } from "./gameService.js";
+import { endRound as endGameRound, startRound } from "./gameService.js";
 
 const rooms = new Map<string, Room>();
 
@@ -62,6 +62,10 @@ export function createRoom(playerName?: string) {
     drawerId: null,
     secretWord: null,
     drawCounts: {},
+    currentRoundGuesses: [],
+    canvasStrokes: [],
+    correctGuessOrder: 0,
+    roundScores: [],
     createdAt: now(),
     updatedAt: now()
   };
@@ -117,6 +121,10 @@ export type SubmitGuessResult =
   | { ok: true; correct: boolean; room: Room }
   | { ok: false; status: number; error: string };
 
+export type EndRoundResult =
+  | { ok: true; room: Room }
+  | { ok: false; status: number; error: string };
+
 export function startGame(code: string, participantId: string): StartGameResult {
   const trimmedCode = code.trim().toUpperCase();
 
@@ -164,25 +172,137 @@ export function submitGuess(code: string, participantId: string, guess: string):
     return { ok: false, status: 403, error: "The drawer cannot guess" };
   }
 
-  const trimmedGuess = guess.trim().toLowerCase();
+  const trimmedGuess = guess.trim();
 
   if (!trimmedGuess) {
     return { ok: false, status: 400, error: "Guess cannot be empty" };
   }
 
-  const correct = trimmedGuess === (room.secretWord ?? "").toLowerCase();
+  if (trimmedGuess.length > 100) {
+    return { ok: false, status: 400, error: "Guess cannot exceed 100 characters" };
+  }
+
+  const duplicate = room.currentRoundGuesses.some(
+    (g) => g.participantId === participantId && g.text.toLowerCase() === trimmedGuess.toLowerCase()
+  );
+
+  if (duplicate) {
+    return { ok: false, status: 400, error: "You already submitted that guess" };
+  }
+
+  const correct = trimmedGuess.toLowerCase() === (room.secretWord ?? "").toLowerCase();
+  const guesser = room.participants.find((p) => p.id === participantId);
+
+  room.currentRoundGuesses.push({
+    participantId,
+    participantName: guesser?.name ?? "Unknown",
+    text: trimmedGuess,
+    isCorrect: correct,
+    timestamp: now()
+  });
 
   if (correct) {
-    const guesser = room.participants.find((p) => p.id === participantId);
-    if (guesser) {
-      guesser.score += 100;
+    room.correctGuessOrder += 1;
+
+    const guesserIds = room.participants.filter(p => p.id !== room.drawerId).map(p => p.id);
+    const correctGuesserIds = new Set(
+      room.currentRoundGuesses.filter(g => g.isCorrect).map(g => g.participantId)
+    );
+    const allCorrect = guesserIds.every(id => correctGuesserIds.has(id));
+
+    if (allCorrect) {
+      endGameRound(room);
     }
-    room.status = "result";
   }
 
   room.updatedAt = now();
 
   return { ok: true, correct, room: cloneRoom(room) };
+}
+
+export type CanvasActionResult =
+  | { ok: true; room: Room }
+  | { ok: false; status: number; error: string };
+
+export function saveCanvasStroke(code: string, participantId: string, stroke: { points: { x: number; y: number }[]; color: string; width: number }): CanvasActionResult {
+  const trimmedCode = code.trim().toUpperCase();
+
+  if (!trimmedCode) {
+    return { ok: false, status: 400, error: "Room code is required" };
+  }
+
+  const room = rooms.get(trimmedCode);
+
+  if (!room) {
+    return { ok: false, status: 404, error: "Room not found" };
+  }
+
+  if (room.status !== "drawing") {
+    return { ok: false, status: 400, error: "No round in progress" };
+  }
+
+  if (room.drawerId !== participantId) {
+    return { ok: false, status: 403, error: "Only the drawer can draw" };
+  }
+
+  room.canvasStrokes.push(stroke);
+  room.updatedAt = now();
+
+  return { ok: true, room: cloneRoom(room) };
+}
+
+export function clearCanvas(code: string, participantId: string): CanvasActionResult {
+  const trimmedCode = code.trim().toUpperCase();
+
+  if (!trimmedCode) {
+    return { ok: false, status: 400, error: "Room code is required" };
+  }
+
+  const room = rooms.get(trimmedCode);
+
+  if (!room) {
+    return { ok: false, status: 404, error: "Room not found" };
+  }
+
+  if (room.status !== "drawing") {
+    return { ok: false, status: 400, error: "No round in progress" };
+  }
+
+  if (room.drawerId !== participantId) {
+    return { ok: false, status: 403, error: "Only the drawer can clear the canvas" };
+  }
+
+  room.canvasStrokes = [];
+  room.updatedAt = now();
+
+  return { ok: true, room: cloneRoom(room) };
+}
+
+export function endRound(code: string, participantId: string): EndRoundResult {
+  const trimmedCode = code.trim().toUpperCase();
+
+  if (!trimmedCode) {
+    return { ok: false, status: 400, error: "Room code is required" };
+  }
+
+  const room = rooms.get(trimmedCode);
+
+  if (!room) {
+    return { ok: false, status: 404, error: "Room not found" };
+  }
+
+  if (room.status !== "drawing") {
+    return { ok: false, status: 400, error: "No round in progress" };
+  }
+
+  if (room.hostId !== participantId) {
+    return { ok: false, status: 403, error: "Only the host can end the round" };
+  }
+
+  endGameRound(room);
+  room.updatedAt = now();
+
+  return { ok: true, room: cloneRoom(room) };
 }
 
 export function getRoom(code: string) {
@@ -208,6 +328,9 @@ export function toRoomSnapshot(room: Room, viewerParticipantId?: string): RoomSn
     drawerId: room.drawerId,
     secretWord: isDrawer ? room.secretWord : null,
     availableWords: listWords(),
-    roles: [...STARTER_ROLES]
+    roles: [...STARTER_ROLES],
+    currentRoundGuesses: [...room.currentRoundGuesses],
+    canvasStrokes: room.canvasStrokes.map((s) => ({ ...s, points: [...s.points] })),
+    roundScores: room.roundScores.length > 0 ? room.roundScores.map((s) => ({ ...s })) : null
   };
 }

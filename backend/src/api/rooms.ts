@@ -1,14 +1,17 @@
 import { Router } from "express";
 import {
+  clearCanvasSchema,
   createRoomSchema,
+  endRoundSchema,
   guessSchema,
   HttpError,
   joinRoomSchema,
   roomCodeParamsSchema,
   roomViewerQuerySchema,
+  saveCanvasStrokeSchema,
   startGameSchema
 } from "./schemas.js";
-import { createRoom, getRoom, joinRoom, startGame, submitGuess, toRoomSnapshot } from "../services/roomStore.js";
+import { clearCanvas, createRoom, endRound, getRoom, joinRoom, saveCanvasStroke, startGame, submitGuess, toRoomSnapshot } from "../services/roomStore.js";
 
 export function createRoomsRouter() {
   const router = Router();
@@ -76,6 +79,62 @@ export function createRoomsRouter() {
 
       response.json({
         correct: result.correct,
+        room: toRoomSnapshot(result.room, participantId)
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post("/:code/canvas/stroke", (request, response, next) => {
+    try {
+      const { code } = roomCodeParamsSchema.parse(request.params);
+      const { participantId, stroke } = saveCanvasStrokeSchema.parse(request.body);
+      const result = saveCanvasStroke(code, participantId, stroke);
+
+      if (!result.ok) {
+        throw new HttpError(result.status, result.error);
+      }
+
+      response.json({
+        ok: true,
+        room: toRoomSnapshot(result.room, participantId)
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post("/:code/canvas/clear", (request, response, next) => {
+    try {
+      const { code } = roomCodeParamsSchema.parse(request.params);
+      const { participantId } = clearCanvasSchema.parse(request.body);
+      const result = clearCanvas(code, participantId);
+
+      if (!result.ok) {
+        throw new HttpError(result.status, result.error);
+      }
+
+      response.json({
+        ok: true,
+        room: toRoomSnapshot(result.room, participantId)
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.post("/:code/end-round", (request, response, next) => {
+    try {
+      const { code } = roomCodeParamsSchema.parse(request.params);
+      const { participantId } = endRoundSchema.parse(request.body);
+      const result = endRound(code, participantId);
+
+      if (!result.ok) {
+        throw new HttpError(result.status, result.error);
+      }
+
+      response.json({
         room: toRoomSnapshot(result.room, participantId)
       });
     } catch (error) {

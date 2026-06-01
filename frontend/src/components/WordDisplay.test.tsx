@@ -36,7 +36,10 @@ describe("WordDisplay", () => {
         currentRound: 1,
         hostId: "p1",
         availableWords: [],
-        roles: ["drawer" as const, "guesser" as const]
+        roles: ["drawer" as const, "guesser" as const],
+        currentRoundGuesses: [],
+        canvasStrokes: [],
+        roundScores: null
       },
       participantId: "p1",
       error: null,
@@ -65,7 +68,10 @@ describe("WordDisplay", () => {
         currentRound: 1,
         hostId: "p1",
         availableWords: [],
-        roles: ["drawer" as const, "guesser" as const]
+        roles: ["drawer" as const, "guesser" as const],
+        currentRoundGuesses: [],
+        canvasStrokes: [],
+        roundScores: null
       },
       participantId: "p1",
       error: null,
@@ -91,7 +97,10 @@ describe("WordDisplay", () => {
         currentRound: 0,
         hostId: "p1",
         availableWords: [],
-        roles: ["drawer" as const, "guesser" as const]
+        roles: ["drawer" as const, "guesser" as const],
+        currentRoundGuesses: [],
+        canvasStrokes: [],
+        roundScores: null
       },
       participantId: "p1",
       error: null,

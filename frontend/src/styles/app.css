@@ -578,3 +578,181 @@ input {
     justify-content: stretch;
   }
 }
+
+/* Canvas toolbar */
+.canvas-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.color-palette {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 100ms ease;
+}
+
+.color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.color-swatch--selected {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--brand);
+}
+
+.brush-width-selector {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.brush-width-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 100ms ease;
+}
+
+.brush-width-option:hover {
+  background: var(--surface-strong);
+}
+
+.brush-width-option--selected {
+  border-color: var(--brand);
+  background: #eff6ff;
+}
+
+.brush-width-preview {
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.brush-width-label {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.clear-confirm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clear-confirm__text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #991b1b;
+}
+
+.button--danger {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.button--danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.button--small {
+  min-height: 36px;
+  padding: 0 16px;
+  font-size: 0.875rem;
+}
+
+/* Guess history */
+.guess-history {
+  display: grid;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.guess-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--surface-strong);
+  font-size: 0.9375rem;
+}
+
+.guess-entry--correct {
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
+}
+
+.guess-entry__text {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.guess-entry__author {
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+
+.guess-entry__badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #059669;
+  color: #ffffff;
+}
+
+/* Score display */
+.score-display {
+  display: grid;
+  gap: 12px;
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--surface-strong);
+}
+
+.score-row__name {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.score-row__points {
+  font-weight: 700;
+  color: var(--brand);
+  font-size: 1.125rem;
+}
+
+.score-row__total {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  margin-left: 8px;
+}

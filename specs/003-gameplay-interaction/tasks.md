@@ -23,9 +23,9 @@
 
 **Purpose**: No project initialization needed — repo exists. This phase validates the development environment.
 
-- [ ] T001 Verify backend compiles with `cd backend && npx tsc --noEmit`
-- [ ] T002 Verify frontend compiles with `cd frontend && npx tsc --noEmit`
-- [ ] T003 Verify all existing tests pass: `cd backend && npm test && cd ../frontend && npm test`
+- [x] T001 Verify backend compiles with `cd backend && npx tsc --noEmit`
+- [x] T002 Verify frontend compiles with `cd frontend && npx tsc --noEmit`
+- [x] T003 Verify all existing tests pass: `cd backend && npm test && cd ../frontend && npm test`
 
 ---
 
@@ -35,12 +35,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 [P] Add Guess, CanvasStroke, RoundScore types in backend/src/models/game.ts
-- [ ] T005 [P] Add guess history, canvas strokes, and scores fields to RoomSnapshot in backend/src/models/game.ts
-- [ ] T006 [P] Add canvas data types (StrokePoint, SaveStrokeBody, ClearCanvasBody) to backend/src/api/schemas.ts
-- [ ] T007 [P] Add guess validation schemas (duplicate check, length limit, drawer-block) to backend/src/api/schemas.ts
-- [ ] T008 [P] Extend frontend RoomSnapshot type with currentRoundGuesses, canvasStrokes, roundScores in frontend/src/services/api.ts
-- [ ] T009 [P] Add saveStroke, clearCanvas, endRound API methods in frontend/src/services/api.ts
+- [x] T004 [P] Add Guess, CanvasStroke, RoundScore types in backend/src/models/game.ts
+- [x] T005 [P] Add guess history, canvas strokes, and scores fields to RoomSnapshot in backend/src/models/game.ts
+- [x] T006 [P] Add canvas data types (StrokePoint, SaveStrokeBody, ClearCanvasBody) to backend/src/api/schemas.ts
+- [x] T007 [P] Add guess validation schemas (duplicate check, length limit, drawer-block) to backend/src/api/schemas.ts
+- [x] T008 [P] Extend frontend RoomSnapshot type with currentRoundGuesses, canvasStrokes, roundScores in frontend/src/services/api.ts
+- [x] T009 [P] Add saveStroke, clearCanvas, endRound API methods in frontend/src/services/api.ts
 
 **Checkpoint**: Foundation ready — user story implementation can now begin
 
@@ -56,22 +56,22 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T010 [P] [US1] Test canvas stroke save endpoint rejects non-drawer in backend/src/api/schemas.test.ts
-- [ ] T011 [P] [US1] Test canvas clear endpoint clears strokes only for drawer in backend/src/services/roomStore.test.ts
-- [ ] T012 [P] [US1] Test canvas stroke data format validation in backend/src/api/schemas.test.ts
+- [x] T010 [P] [US1] Test canvas stroke save endpoint rejects non-drawer in backend/src/api/schemas.test.ts
+- [x] T011 [P] [US1] Test canvas clear endpoint clears strokes only for drawer in backend/src/services/roomStore.test.ts
+- [x] T012 [P] [US1] Test canvas stroke data format validation in backend/src/api/schemas.test.ts
 
 ### Implementation for User Story 1
 
-- [ ] T013 [P] [US1] Create Canvas component with HTML Canvas 2D API in frontend/src/components/Canvas.tsx
-- [ ] T014 [P] [US1] Create ColorPalette component (8+ colors) in frontend/src/components/ColorPalette.tsx
-- [ ] T015 [P] [US1] Create BrushWidthSelector component (3 sizes) in frontend/src/components/BrushWidthSelector.tsx
-- [ ] T016 [P] [US1] Create ClearCanvasButton with confirmation dialog in frontend/src/components/ClearCanvasButton.tsx
-- [ ] T017 [US1] Implement POST /rooms/:code/canvas/stroke endpoint in backend/src/api/rooms.ts
-- [ ] T018 [US1] Implement POST /rooms/:code/canvas/clear endpoint in backend/src/api/rooms.ts
-- [ ] T019 [US1] Implement canvas stroke storage and retrieval in backend/src/services/roomStore.ts
-- [ ] T020 [US1] Integrate canvas components into GamePage in frontend/src/pages/GamePage.tsx
-- [ ] T021 [US1] Add canvas rendering from strokes on poll (replay strokes on canvas) in frontend/src/components/Canvas.tsx
-- [ ] T022 [US1] Add canvas-related CSS styles in frontend/src/styles/app.css
+- [x] T013 [P] [US1] Create Canvas component with HTML Canvas 2D API in frontend/src/components/Canvas.tsx
+- [x] T014 [P] [US1] Create ColorPalette component (8+ colors) in frontend/src/components/ColorPalette.tsx
+- [x] T015 [P] [US1] Create BrushWidthSelector component (3 sizes) in frontend/src/components/BrushWidthSelector.tsx
+- [x] T016 [P] [US1] Create ClearCanvasButton with confirmation dialog in frontend/src/components/ClearCanvasButton.tsx
+- [x] T017 [US1] Implement POST /rooms/:code/canvas/stroke endpoint in backend/src/api/rooms.ts
+- [x] T018 [US1] Implement POST /rooms/:code/canvas/clear endpoint in backend/src/api/rooms.ts
+- [x] T019 [US1] Implement canvas stroke storage and retrieval in backend/src/services/roomStore.ts
+- [x] T020 [US1] Integrate canvas components into GamePage in frontend/src/pages/GamePage.tsx
+- [x] T021 [US1] Add canvas rendering from strokes on poll (replay strokes on canvas) in frontend/src/components/Canvas.tsx
+- [x] T022 [US1] Add canvas-related CSS styles in frontend/src/styles/app.css
 
 **Checkpoint**: US1 complete — drawer can draw, clear, and sync canvas. Guessers see canvas in real-time.
 
@@ -87,17 +87,17 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T023 [P] [US2] Test guess validation (empty, too long, duplicate) in backend/src/api/schemas.test.ts
-- [ ] T024 [P] [US2] Test guess submission stores in history (no immediate state transition) in backend/src/services/roomStore.test.ts
-- [ ] T025 [P] [US2] Test drawer cannot submit guess in backend/src/services/roomStore.test.ts
+- [x] T023 [P] [US2] Test guess validation (empty, too long, duplicate) in backend/src/api/schemas.test.ts
+- [x] T024 [P] [US2] Test guess submission stores in history (no immediate state transition) in backend/src/services/roomStore.test.ts
+- [x] T025 [P] [US2] Test drawer cannot submit guess in backend/src/services/roomStore.test.ts
 
 ### Implementation for User Story 2
 
-- [ ] T026 [US2] Update submitGuess to store guess in currentRoundGuesses array (not immediate scoring) in backend/src/services/roomStore.ts
-- [ ] T027 [US2] Add duplicate guess detection (per-player, case-insensitive) in backend/src/services/roomStore.ts
-- [ ] T028 [US2] Update GuessForm component to call real API and show validation errors in frontend/src/components/GuessForm.tsx
-- [ ] T029 [US2] Disable guess input for drawer role in frontend/src/components/GuessForm.tsx
-- [ ] T030 [US2] Add guess form styles in frontend/src/styles/app.css
+- [x] T026 [US2] Update submitGuess to store guess in currentRoundGuesses array (not immediate scoring) in backend/src/services/roomStore.ts
+- [x] T027 [US2] Add duplicate guess detection (per-player, case-insensitive) in backend/src/services/roomStore.ts
+- [x] T028 [US2] Update GuessForm component to call real API and show validation errors in frontend/src/components/GuessForm.tsx
+- [x] T029 [US2] Disable guess input for drawer role in frontend/src/components/GuessForm.tsx
+- [x] T030 [US2] Add guess form styles in frontend/src/styles/app.css
 
 **Checkpoint**: US2 complete — guessers can submit guesses with validation, see accept/reject feedback.
 

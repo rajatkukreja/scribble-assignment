@@ -1,10 +1,30 @@
 import { Card } from "./Card";
+import { useRoomState } from "../state/roomStore";
 
 export function ResultPanel() {
+  const { room } = useRoomState();
+
+  if (!room || room.status !== "result" || !room.roundScores || room.roundScores.length === 0) {
+    return null;
+  }
+
+  const sorted = [...room.roundScores].sort((a, b) => b.points - a.points);
+
   return (
-    <Card title="Activity">
-      <div className="placeholder-block" style={{ backgroundColor: '#f9fafb' }}>
-        <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>Game activity and guesses will appear here.</p>
+    <Card title="Round Scores">
+      <div className="score-display">
+        {sorted.map((s) => {
+          const participant = room.participants.find(p => p.id === s.participantId);
+          return (
+            <div key={s.participantId} className="score-row">
+              <span className="score-row__name">{participant?.name ?? "Unknown"}</span>
+              <div>
+                <span className="score-row__points">+{s.points}</span>
+                <span className="score-row__total">{participant?.score ?? 0}</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </Card>
   );
