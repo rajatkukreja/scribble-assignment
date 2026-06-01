@@ -45,6 +45,8 @@ You are working on a monolithic repository for a multiplayer drawing game ("Scri
 - TypeScript 5.x (strict mode) + Express 4.x (backend), React 18 + Vite 6.x (frontend), Zod (validation), Vitest (testing) (001-room-setup-lobby)
 - In-memory only (no database) — `Map<string, Room>` in backend (001-room-setup-lobby)
 - In-memory — `Map<string, Room>` in backend; no database (002-game-start-drawer)
+- TypeScript 5.6+ (strict mode) + Express 4.x, React 18.x, Zod 3.x, Vitest 3.x (003-gameplay-interaction)
+- In-memory only (`Map<string, Room>`) — no database (003-gameplay-interaction)
 
 ## Recent Changes
 - 001-room-setup-lobby: Added TypeScript 5.x (strict mode) + Express 4.x (backend), React 18 + Vite 6.x (frontend), Zod (validation), Vitest (testing)
