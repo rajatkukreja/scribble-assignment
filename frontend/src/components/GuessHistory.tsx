@@ -4,7 +4,7 @@ import { useRoomState } from "../state/roomStore";
 export function GuessHistory() {
   const { room } = useRoomState();
 
-  if (!room || room.currentRoundGuesses.length === 0) {
+  if (!room || !room.currentRoundGuesses || room.currentRoundGuesses.length === 0) {
     return null;
   }
 
