@@ -136,7 +136,7 @@ Use this to confirm the starter works from a clean clone:
 
 1. Start the backend and confirm `http://localhost:3001/health` returns `{ "ok": true }`.
 2. Start the frontend and open `http://localhost:5173`.
-3. Confirm the Start screen shows `Create Room` and `Join Room`.
+3. Confirm the Start screen heading is `Scribble` and shows `Create Room` and `Join Room`.
 4. Create a room and confirm you land on the Lobby screen.
 5. Open another tab, join the same room, and use the Lobby refresh button to load the latest participant list.
 6. Open the Game screen and confirm the canvas, guess input, scoreboard, and result areas are placeholders only.

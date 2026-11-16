@@ -8,7 +8,7 @@ export function StartPage() {
       <div className="start-hero__content" style={{ paddingBottom: '16px' }}>
         <PageHeader
           kicker="Play Now"
-          title="Scribble Game"
+          title="Scribble"
           description="Create a new room to play with friends or join an existing game using a room code. Take turns drawing and guessing words in real-time."
         />
 
