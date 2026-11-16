@@ -79,7 +79,8 @@ Implemented today:
 - join room by code flow
 - fetch room snapshot flow
 - in-memory room storage on the backend
-- lobby participant display from the latest fetched snapshot
+- successful room creation and joining navigate to the lobby, showing the room code and participants from the returned snapshot
+- failed joins stay on the join form and show an error; existing lobby snapshots can be refreshed manually
 - game screen placeholders for canvas, guess input, scoreboard, and results
 - basic light UI styling
 
@@ -138,7 +139,7 @@ Use this to confirm the starter works from a clean clone:
 2. Start the frontend and open `http://localhost:5173`.
 3. Confirm the Start screen shows `Create Room` and `Join Room`.
 4. Create a room and confirm you land on the Lobby screen.
-5. Open another tab, join the same room, and use the Lobby refresh button to load the latest participant list.
+5. Open another tab, join the same room, and confirm the joiner lands in the lobby with the room code and participants. Use the Lobby refresh button in the first tab to load the latest participant list. An unsuccessful join remains on the join form with an error.
 6. Open the Game screen and confirm the canvas, guess input, scoreboard, and result areas are placeholders only.
 7. Treat any start-page marketing copy as presentational only; use this README for actual supported scope.
 
