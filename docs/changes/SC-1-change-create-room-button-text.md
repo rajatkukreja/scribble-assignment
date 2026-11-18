@@ -22,10 +22,11 @@ Start the frontend and backend as described in the README. On the Start screen, 
 
 ## Tests
 
-- Updated `frontend/src/pages/StartPage.test.tsx` to exercise the real routes and assert the sole create-room link has the new label.
-- Frontend: `npm test` passed (3 tests, with React Router v7 future-flag warnings); `npm run build` and `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json` passed.
-- Backend: `npm test` passed (4 tests); `npm run build` and `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json` passed.
-- Root `npm test`, `npm run build`, `npm run typecheck`, and `npm run lint` failed because there is no root package.json. Neither package defines a typecheck or lint script; the explicit TypeScript checks above passed, but lint could not be run.
+- The existing `frontend/src/pages/StartPage.test.tsx` test exercises the real routes and asserts that the sole create-room link has the new label.
+- Reran frontend `npm test`: passed (3 tests; React Router v7 future-flag warnings). `npm run build` and `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json` passed.
+- Reran backend `npm test`: passed (4 tests). `npm run build` and `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json` passed.
+- `npm run lint` in both packages could not run: neither defines a lint script. Neither defines a typecheck script, so the explicit TypeScript checks above were used.
+- Root `npm test` and `npm run lint` could not run because there is no root package.json.
 
 ## Docs updated
 
