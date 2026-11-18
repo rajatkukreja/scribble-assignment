@@ -14,7 +14,7 @@ export function StartPage() {
 
         <div className="button-row button-row--hero">
           <Link className="button button--primary" to="/create-room">
-            Create Room
+            New Room
           </Link>
           <Link className="button button--secondary" to="/join-room">
             Join Room
