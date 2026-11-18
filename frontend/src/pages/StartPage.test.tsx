@@ -25,11 +25,10 @@ describe("StartPage", () => {
         );
       });
 
-      const link = Array.from(container.querySelectorAll("a")).find(
-        (element) => element.textContent?.trim() === "New Room"
-      );
-      expect(link).toBeDefined();
-      expect(link?.getAttribute("href")).toBe("/create-room");
+      const createRoomLinks = container.querySelectorAll('a[href="/create-room"]');
+      expect(createRoomLinks).toHaveLength(1);
+      const link = createRoomLinks[0];
+      expect(link.textContent?.trim()).toBe("New Room");
 
       act(() => {
         link?.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, button: 0 }));

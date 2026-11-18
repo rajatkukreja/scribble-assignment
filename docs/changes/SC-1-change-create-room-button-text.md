@@ -14,7 +14,7 @@ Rename create room button to New Room
 
 ## How each criterion is met
 
-- The create room button reads `New Room`: `StartPage > shows New Room and navigates to the create room page` checks the rendered link and its destination, then clicks it and checks the actual create-room page.
+- The create room button reads `New Room`: `StartPage > shows New Room and navigates to the create room page` checks that the single create-room link has the new label, then clicks it and checks the actual create-room page.
 
 ## How to verify
 
@@ -22,11 +22,10 @@ Start the frontend and backend as described in the README. On the Start screen, 
 
 ## Tests
 
-- Updated `frontend/src/pages/StartPage.test.tsx` to exercise the real routes and create-room page rather than a test-only destination.
-- Frontend: `node node_modules/vitest/vitest.mjs run` passed (3 tests, with React Router v7 future-flag warnings); `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json` passed; `node node_modules/typescript/bin/tsc -b && node node_modules/vite/bin/vite.js build` passed.
-- Backend: `node node_modules/vitest/vitest.mjs run` passed (4 tests); `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json` and `node node_modules/typescript/bin/tsc -p tsconfig.json` passed.
-- `npm test` and `npm run build` in each package could not execute the installed `.bin` symlinks (operation not permitted); the equivalent direct commands above passed. Root `npm test`, `npm run build`, and `npm run lint` failed because there is no root package.json.
-- `npm run lint` in both packages failed because neither defines a lint script.
+- Updated `frontend/src/pages/StartPage.test.tsx` to exercise the real routes and assert the sole create-room link has the new label.
+- Frontend: `npm test` passed (3 tests, with React Router v7 future-flag warnings); `npm run build` and `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json` passed.
+- Backend: `npm test` passed (4 tests); `npm run build` and `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json` passed.
+- Root `npm test`, `npm run build`, `npm run typecheck`, and `npm run lint` failed because there is no root package.json. Neither package defines a typecheck or lint script; the explicit TypeScript checks above passed, but lint could not be run.
 
 ## Docs updated
 
