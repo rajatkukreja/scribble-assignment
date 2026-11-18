@@ -1,8 +1,8 @@
 import { act } from "react";
 import { createRoot } from "react-dom/client";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { StartPage } from "./StartPage";
+import { AppRoutes } from "../routes";
+import { RoomStoreProvider } from "../state/roomStore";
 
 describe("StartPage", () => {
   afterEach(() => {
@@ -11,6 +11,7 @@ describe("StartPage", () => {
 
   it("shows New Room and navigates to the create room page", () => {
     vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+    window.history.replaceState(null, "", "/");
     const container = document.createElement("div");
     document.body.appendChild(container);
     const root = createRoot(container);
@@ -18,12 +19,9 @@ describe("StartPage", () => {
     try {
       act(() => {
         root.render(
-          <MemoryRouter initialEntries={["/"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <Routes>
-              <Route path="/" element={<StartPage />} />
-              <Route path="/create-room" element={<p>Create room destination</p>} />
-            </Routes>
-          </MemoryRouter>
+          <RoomStoreProvider>
+            <AppRoutes />
+          </RoomStoreProvider>
         );
       });
 
@@ -32,15 +30,16 @@ describe("StartPage", () => {
       );
       expect(link).toBeDefined();
       expect(link?.getAttribute("href")).toBe("/create-room");
-      expect(container.textContent).not.toContain("Create Room");
 
       act(() => {
         link?.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, button: 0 }));
       });
-      expect(container.textContent).toContain("Create room destination");
+      expect(window.location.pathname).toBe("/create-room");
+      expect(container.querySelector("h1")?.textContent).toBe("Create Room");
     } finally {
       act(() => root.unmount());
       container.remove();
+      window.history.replaceState(null, "", "/");
     }
   });
 });
